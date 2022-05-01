@@ -1,5 +1,7 @@
 # cordova-plugin-webview-x5
 
+本项目在liuxiaoy/cordova-plugin-webview-x5的基础上适配了cordova10
+
 把``Cordova``的``WebView``替换为腾讯的[X5](http://x5.tencent.com/)。
 
 ## 优劣比较
@@ -19,7 +21,7 @@
 
 ## 安装
 
-``cordova plugin add cordova-plugin-webview-x5``
+``cordova plugin add https://github.com/msmarks/cordova-plugin-webview-x5.git``
 
 ## 感谢
 
