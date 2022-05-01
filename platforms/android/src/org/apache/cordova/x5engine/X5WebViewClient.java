@@ -418,8 +418,12 @@ public class X5WebViewClient extends WebViewClient {
                 CordovaResourceApi.OpenForReadResult result = resourceApi.openForRead(remappedUri, true);
                 return new WebResourceResponse(result.mimeType, "UTF-8", result.inputStream);
             }
+            android.webkit.WebResourceResponse res = this.assetLoader.shouldInterceptRequest(remappedUri);
+            return new WebResourceResponse(
+                    res.getMimeType(), res.getEncoding(), res.getStatusCode(), res.getReasonPhrase(), res.getResponseHeaders(), res.getData()
+            );
             // If we don't need to special-case the request, let the browser load it.
-            return null;
+            // return null;
         } catch (IOException e) {
             if (!(e instanceof FileNotFoundException)) {
                 LOG.e(TAG, "Error occurred while loading a file (returning a 404).", e);
