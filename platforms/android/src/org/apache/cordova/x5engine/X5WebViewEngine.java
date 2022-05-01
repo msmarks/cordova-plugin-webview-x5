@@ -111,7 +111,11 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
         nativeToJsMessageQueue.addBridgeMode(new NativeToJsMessageQueue.OnlineEventsBridgeMode(new NativeToJsMessageQueue.OnlineEventsBridgeMode.OnlineEventsBridgeModeDelegate() {
             @Override
             public void setNetworkAvailable(boolean value) {
-                webView.setNetworkAvailable(value);
+                //sometimes this can be called after calling webview.destroy() on destroy()
+                //thus resulting in a NullPointerException
+                if(webView!=null) {
+                   webView.setNetworkAvailable(value);
+                }
             }
             @Override
             public void runOnUiThread(Runnable r) {
@@ -217,6 +221,12 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
         //如果webview内容宽度大于显示区域的宽度,那么将内容缩小,以适应显示区域的宽度, 默认是false
         settings.setLoadWithOverviewMode(true);
 
+        // 系统字体大小变更
+        boolean applySystemFontScale = preferences.getBoolean("applySystemFontScale", false);
+        if (applySystemFontScale) {
+            settings.setTextZoom((int)(this.getSystemFontScale() * 100));
+        }
+
         // Fix for CB-1405
         // Google issue 4641
         String defaultUserAgent = settings.getUserAgentString();
@@ -245,6 +255,22 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
             webView.getContext().registerReceiver(this.receiver, intentFilter);
         }
         // end CB-1405
+    }
+
+    private float getSystemFontScale() {
+        float systemFontScale = webView.getContext().getResources().getConfiguration().fontScale;
+        LOG.d(TAG, "current system font scale is " + systemFontScale);
+        boolean limitSystemFontScale = preferences.getBoolean("limitSystemFontScale", false);
+        if (!limitSystemFontScale) {
+            return systemFontScale;
+        }
+        if (1.5f < systemFontScale) {
+            systemFontScale = 1.5f;
+        }
+        if (0.8f > systemFontScale) {
+            systemFontScale = 0.8f;
+        }
+        return systemFontScale;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

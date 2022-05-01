@@ -45,6 +45,8 @@
         <source-file src="platforms/android/libs/x5core.aar" target-dir="libs"/>
 
         <framework src="platforms/android/x5.gradle" custom="true" type="gradleReference"/>
+        <dependency  "androidx.webkit:webkit" version="1.4.0" />
+
 
         <info>
             If X5 version has upgraded,you can update x5.gradle by yourself.
